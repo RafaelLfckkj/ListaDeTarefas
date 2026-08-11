@@ -3,7 +3,6 @@ import {
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
@@ -12,13 +11,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -26,11 +18,12 @@ import {
   List,
   Check,
   Blocks,
-  SquarePen,
   Trash,
   ListCheck,
   Sigma,
 } from "lucide-react";
+
+import { EditTask } from "../components/edit-task";
 
 export default function Home() {
   return (
@@ -68,23 +61,9 @@ export default function Home() {
               <p className="flex-1 px-2 text-sm">Estudar React</p>
 
               <div className="flex items-center gap-2">
-                <Dialog>
-                  <DialogTrigger>
-                    <SquarePen
-                      size={16}
-                      className="cursor-pointer hover:size-4.5 duration-100"
-                    />
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Editar Tarefa</DialogTitle>
-                    </DialogHeader>
-                    <div className="flex gap-2">
-                      <Input placeholder="Editar Tarefa..." />
-                      <Button className="cursor-pointer">Editar</Button>
-                    </div>
-                  </DialogContent>
-                </Dialog>
+
+                <EditTask />
+
                 <Trash
                   size={16}
                   className="cursor-pointer hover:size-4.5 duration-100"
