@@ -1,37 +1,90 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { Plus, List, Check, Blocks } from "lucide-react";
+import {
+  Plus,
+  List,
+  Check,
+  Blocks,
+  SquarePen,
+  Trash,
+  ListCheck,
+  Sigma,
+} from "lucide-react";
 
 export default function Home() {
   return (
     <main className="w-full bg-gray-100 h-screen flex justify-center items-center">
-      <Card className="w-lg p-4">
-        <div className="flex gap-2">
+      <Card className="w-lg ">
+        <CardHeader className="flex gap-2">
           <Input placeholder="Adicionar Tarefa..." />
-          <Button className="cursor-pointer" variant="outline">
+          <Button className="cursor-pointer">
             <Plus />
             Cadastrar
           </Button>
-        </div>
-        <Separator />
+        </CardHeader>
 
-        <div className="flex gap-2">
-          <Badge className="cursor-pointer">
-            <List />
-            Todas
-          </Badge>
-          <Badge className="cursor-pointer">
-            <Blocks />
-            Não Finalizadas
-          </Badge>
-          <Badge className="cursor-pointer">
-            <Check />
-            Concluidas
-          </Badge>
-        </div>
+        <CardContent>
+          <Separator className="mb-4" />
+
+          <div className="flex gap-2">
+            <Badge className="cursor-pointer" variant="default">
+              <List />
+              Todas
+            </Badge>
+            <Badge className="cursor-pointer" variant="outline">
+              <Blocks />
+              Não Finalizadas
+            </Badge>
+            <Badge className="cursor-pointer" variant="outline">
+              <Check />
+              Concluidas
+            </Badge>
+          </div>
+
+          <div className="mt-4  border-b">
+            <div className="h-14 flex justify-between items-center  border-t">
+              <div className="w-1 h-full bg-green-300"></div>
+              <p className="flex-1 px-2 text-sm">Estudar React</p>
+
+              <div className="flex items-center gap-2">
+                <SquarePen
+                  size={16}
+                  className="cursor-pointer hover:size-4.5 duration-100"
+                />
+                <Trash
+                  size={16}
+                  className="cursor-pointer hover:size-4.5 duration-100"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="flex justify-between mt-4">
+            <div className="flex gap-2 items-center">
+              <ListCheck size={18} />
+              <p className="text-xs">Tarefas Concluidas (3/3)</p>
+            </div>
+            <Button variant="outline" className="text-xs h-7 cursor-pointer">
+              <Trash />
+              Limpar Tarefas Concluidas
+            </Button>
+          </div>
+
+          <div className="h-2 w-full bg-gray-100 mt-4 rounded-md">
+            <div
+              className="h-full bg-blue-500 rounded-md"
+              style={{ width: "50%" }}
+            ></div>
+          </div>
+
+          <div className="flex justify-end items-center mt-2 gap-2">
+            <Sigma size={18} /> 
+            <p className="text-xs">3 Tarefas no total</p>
+          </div>
+        </CardContent>
       </Card>
     </main>
   );
