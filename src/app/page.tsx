@@ -1,6 +1,24 @@
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -50,10 +68,23 @@ export default function Home() {
               <p className="flex-1 px-2 text-sm">Estudar React</p>
 
               <div className="flex items-center gap-2">
-                <SquarePen
-                  size={16}
-                  className="cursor-pointer hover:size-4.5 duration-100"
-                />
+                <Dialog>
+                  <DialogTrigger>
+                    <SquarePen
+                      size={16}
+                      className="cursor-pointer hover:size-4.5 duration-100"
+                    />
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Editar Tarefa</DialogTitle>
+                    </DialogHeader>
+                    <div className="flex gap-2">
+                      <Input placeholder="Editar Tarefa..." />
+                      <Button className="cursor-pointer">Editar</Button>
+                    </div>
+                  </DialogContent>
+                </Dialog>
                 <Trash
                   size={16}
                   className="cursor-pointer hover:size-4.5 duration-100"
@@ -67,10 +98,28 @@ export default function Home() {
               <ListCheck size={18} />
               <p className="text-xs">Tarefas Concluidas (3/3)</p>
             </div>
-            <Button variant="outline" className="text-xs h-7 cursor-pointer">
-              <Trash />
-              Limpar Tarefas Concluidas
-            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger>
+                <Button
+                  variant="outline"
+                  className="text-xs h-7 cursor-pointer"
+                >
+                  <Trash />
+                  Limpar Tarefas Concluidas
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>
+                    Tem Certeza que deseja exluir x items?
+                  </AlertDialogTitle>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogAction>Sim</AlertDialogAction>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
 
           <div className="h-2 w-full bg-gray-100 mt-4 rounded-md">
@@ -81,7 +130,7 @@ export default function Home() {
           </div>
 
           <div className="flex justify-end items-center mt-2 gap-2">
-            <Sigma size={18} /> 
+            <Sigma size={18} />
             <p className="text-xs">3 Tarefas no total</p>
           </div>
         </CardContent>
