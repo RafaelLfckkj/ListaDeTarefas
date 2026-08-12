@@ -1,3 +1,5 @@
+"use client";
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -25,7 +27,24 @@ import {
 
 import { EditTask } from "../components/edit-task";
 
+import { getTasks } from "@/_actions/get-tasks-from-db";
+import { useState } from "react";
+
+import { Tasks } from "@/generated/prisma/client";
+
 export default function Home() {
+  const [taskList, setTaskList] = useState<Tasks[]>([]);
+
+  const handleGetTasks = async () => {
+    const tasks = await getTasks();
+
+    if (!tasks) return;
+
+    setTaskList(tasks);
+  };
+
+  console.log(taskList);
+
   return (
     <main className="w-full bg-gray-100 h-screen flex justify-center items-center">
       <Card className="w-lg ">
@@ -36,6 +55,7 @@ export default function Home() {
             Cadastrar
           </Button>
         </CardHeader>
+        <Button onClick={handleGetTasks}>Buscar Tarefas</Button>
 
         <CardContent>
           <Separator className="mb-4" />
@@ -61,7 +81,6 @@ export default function Home() {
               <p className="flex-1 px-2 text-sm">Estudar React</p>
 
               <div className="flex items-center gap-2">
-
                 <EditTask />
 
                 <Trash
