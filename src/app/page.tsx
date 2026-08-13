@@ -28,34 +28,54 @@ import {
 import { EditTask } from "../components/edit-task";
 
 import { getTasks } from "@/_actions/get-tasks-from-db";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Tasks } from "@/generated/prisma/client";
+import { NewTask } from "@/_actions/add-task";
 
 export default function Home() {
   const [taskList, setTaskList] = useState<Tasks[]>([]);
+  const [task, setTask] = useState<string>("");
 
   const handleGetTasks = async () => {
-    const tasks = await getTasks();
+    try {
+      const tasks = await getTasks();
 
-    if (!tasks) return;
+      if (!tasks) return;
 
-    setTaskList(tasks);
+      setTaskList(tasks);
+    } catch (error) {
+      throw error;
+    }
   };
 
-  console.log(taskList);
+  const handleAdTask = async () => {
+    if (task.length === 0 || !task) {
+      return;
+    }
+
+    const myNewTask = await NewTask(task);
+    if (!myNewTask) return;
+    await handleGetTasks()
+  };
+
+  useEffect(() => {
+    handleGetTasks();
+  }, []);
 
   return (
     <main className="w-full bg-gray-100 h-screen flex justify-center items-center">
       <Card className="w-lg ">
         <CardHeader className="flex gap-2">
-          <Input placeholder="Adicionar Tarefa..." />
-          <Button className="cursor-pointer">
+          <Input
+            placeholder="Adicionar Tarefa..."
+            onChange={(e) => setTask(e.target.value)}
+          />
+          <Button className="cursor-pointer" onClick={handleAdTask}>
             <Plus />
             Cadastrar
           </Button>
         </CardHeader>
-        <Button onClick={handleGetTasks}>Buscar Tarefas</Button>
 
         <CardContent>
           <Separator className="mb-4" />
@@ -76,19 +96,24 @@ export default function Home() {
           </div>
 
           <div className="mt-4  border-b">
-            <div className="h-14 flex justify-between items-center  border-t">
-              <div className="w-1 h-full bg-green-300"></div>
-              <p className="flex-1 px-2 text-sm">Estudar React</p>
+            {taskList.map((task) => (
+              <div
+                className="h-14 flex justify-between items-center  border-t"
+                key={task.id}
+              >
+                <div className="w-1 h-full bg-green-300"></div>
+                <p className="flex-1 px-2 text-sm">{task.task}</p>
 
-              <div className="flex items-center gap-2">
-                <EditTask />
+                <div className="flex gap-2">
+                  <EditTask />
 
-                <Trash
-                  size={16}
-                  className="cursor-pointer hover:size-4.5 duration-100"
-                />
+                  <Trash
+                    size={16}
+                    className="cursor-pointer hover:size-4.5 duration-100"
+                  />
+                </div>
               </div>
-            </div>
+            ))}
           </div>
 
           <div className="flex justify-between mt-4">
