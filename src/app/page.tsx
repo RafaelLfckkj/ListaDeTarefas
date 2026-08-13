@@ -32,6 +32,7 @@ import { useEffect, useState } from "react";
 
 import { Tasks } from "@/generated/prisma/client";
 import { NewTask } from "@/_actions/add-task";
+import { deleteTask } from "@/_actions/delete-task";
 
 export default function Home() {
   const [taskList, setTaskList] = useState<Tasks[]>([]);
@@ -50,13 +51,32 @@ export default function Home() {
   };
 
   const handleAdTask = async () => {
-    if (task.length === 0 || !task) {
-      return;
-    }
+    try {
+      if (task.length === 0 || !task) {
+        return;
+      }
 
-    const myNewTask = await NewTask(task);
-    if (!myNewTask) return;
-    await handleGetTasks()
+      const myNewTask = await NewTask(task);
+      if (!myNewTask) return;
+      await handleGetTasks();
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const handleDeleteTask = async (id: string) => {
+    try {
+      if (!id) return;
+
+      const deletedTask = await deleteTask(id);
+
+      if (!deleteTask) return;
+
+      console.log(deleteTask);
+      await handleGetTasks();
+    } catch (error) {
+      throw error;
+    }
   };
 
   useEffect(() => {
@@ -110,6 +130,7 @@ export default function Home() {
                   <Trash
                     size={16}
                     className="cursor-pointer hover:size-4.5 duration-100"
+                    onClick={() => handleDeleteTask(task.id)}
                   />
                 </div>
               </div>
