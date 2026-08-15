@@ -34,6 +34,8 @@ import { Tasks } from "@/generated/prisma/client";
 import { NewTask } from "@/_actions/add-task";
 import { deleteTask } from "@/_actions/delete-task";
 
+import { toast } from "sonner";
+
 export default function Home() {
   const [taskList, setTaskList] = useState<Tasks[]>([]);
   const [task, setTask] = useState<string>("");
@@ -53,11 +55,14 @@ export default function Home() {
   const handleAdTask = async () => {
     try {
       if (task.length === 0 || !task) {
+        toast.error("Por favor, insira uma tarefa válida!");
         return;
       }
 
       const myNewTask = await NewTask(task);
+      toast.success("Tarefa adicionada com sucesso!");
       if (!myNewTask) return;
+      
       await handleGetTasks();
     } catch (error) {
       throw error;
@@ -74,6 +79,7 @@ export default function Home() {
 
       console.log(deleteTask);
       await handleGetTasks();
+      toast.warning("Tarefa deletada com sucesso!");
     } catch (error) {
       throw error;
     }
