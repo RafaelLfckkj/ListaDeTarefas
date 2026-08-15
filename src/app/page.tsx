@@ -25,7 +25,7 @@ import {
   Sigma,
 } from "lucide-react";
 
-import { EditTask } from "../components/edit-task";
+import EditTask from "../components/edit-task";
 
 import { getTasks } from "@/_actions/get-tasks-from-db";
 import { useEffect, useState } from "react";
@@ -170,7 +170,7 @@ export default function Home() {
                 </p>
 
                 <div className="flex gap-2">
-                  <EditTask />
+                  <EditTask task={task} handleGetTasks={handleGetTasks}/>
 
                   <Trash
                     size={16}
