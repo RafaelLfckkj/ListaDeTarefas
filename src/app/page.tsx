@@ -36,6 +36,8 @@ import { deleteTask } from "@/_actions/delete-task";
 
 import { toast } from "sonner";
 
+import { updateTaskStatus } from "@/_actions/toggle-done";
+
 export default function Home() {
   const [taskList, setTaskList] = useState<Tasks[]>([]);
   const [task, setTask] = useState<string>("");
@@ -62,7 +64,9 @@ export default function Home() {
       const myNewTask = await NewTask(task);
       toast.success("Tarefa adicionada com sucesso!");
       if (!myNewTask) return;
-      
+
+      setTask("");
+
       await handleGetTasks();
     } catch (error) {
       throw error;
@@ -85,6 +89,33 @@ export default function Home() {
     }
   };
 
+  const handleToggleTask = async (taskId: string) => {
+    const previousTask = [...taskList];
+
+    try {
+      setTaskList((prev) => {
+        const updatedTaskList = prev.map((task) => {
+          if (task.id === taskId) {
+            return {
+              ...task,
+              done: !task.done,
+            };
+          } else {
+            return task;
+          }
+        });
+
+        return updatedTaskList;
+      });
+
+    await updateTaskStatus(taskId);
+      
+    } catch (error) {
+      setTaskList(previousTask)
+      throw error 
+    }
+  };
+
   useEffect(() => {
     handleGetTasks();
   }, []);
@@ -96,6 +127,7 @@ export default function Home() {
           <Input
             placeholder="Adicionar Tarefa..."
             onChange={(e) => setTask(e.target.value)}
+            value={task}
           />
           <Button className="cursor-pointer" onClick={handleAdTask}>
             <Plus />
@@ -127,8 +159,15 @@ export default function Home() {
                 className="h-14 flex justify-between items-center  border-t"
                 key={task.id}
               >
-                <div className="w-1 h-full bg-green-300"></div>
-                <p className="flex-1 px-2 text-sm">{task.task}</p>
+                <div
+                  className={`${task.done ? "w-1 h-full bg-green-300" : "w-1 h-full bg-red-400"}`}
+                ></div>
+                <p
+                  className="flex-1 px-2 text-sm cursor-pointer hover:text-gray-400"
+                  onClick={() => handleToggleTask(task.id)}
+                >
+                  {task.task}
+                </p>
 
                 <div className="flex gap-2">
                   <EditTask />
