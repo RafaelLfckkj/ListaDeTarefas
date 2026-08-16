@@ -9,7 +9,7 @@ import {
 } from "./ui/dialog";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
-import { Tasks } from "@/generated/prisma";
+import { Tasks } from "@/generated/prisma/client";
 import { useState } from "react";
 import { toast } from "sonner";
 
