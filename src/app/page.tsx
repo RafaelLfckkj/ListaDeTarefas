@@ -14,13 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import {
-  Plus,
-  Trash,
-  ListCheck,
-  Sigma,
-  LoaderCircle,
-} from "lucide-react";
+import { Plus, Trash, ListCheck, Sigma, LoaderCircle } from "lucide-react";
 
 import EditTask from "../components/edit-task";
 
@@ -34,13 +28,18 @@ import { deleteTask } from "@/_actions/delete-task";
 import { toast } from "sonner";
 
 import { updateTaskStatus } from "@/_actions/toggle-done";
-import  Filter  from "../components/filter";
+import Filter from "../components/filter";
+import { FilterType } from "../components/filter";
+
+import { deleteCompletedTasks } from "@/_actions/clear-completed-task";
+import { DialogClose } from "@/components/ui/dialog";
 
 export default function Home() {
   const [taskList, setTaskList] = useState<Tasks[]>([]);
   const [task, setTask] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
-  const [currentFilter, setCurrentFilter] = useState("all");
+  const [currentFilter, setCurrentFilter] = useState<FilterType>("all");
+  const [filterTasks, setFilterTasks] = useState<Tasks[]>([]);
 
   const handleGetTasks = async () => {
     try {
@@ -118,9 +117,32 @@ export default function Home() {
     }
   };
 
+  const clearTasks = async () => {
+    const deletedTasks = await deleteCompletedTasks();
+    if (!deletedTasks) return;
+    setTaskList(deletedTasks);
+  };
+
   useEffect(() => {
     handleGetTasks();
   }, []);
+
+  useEffect(() => {
+    switch (currentFilter) {
+      case "all":
+        setFilterTasks(taskList);
+        console.log(filterTasks);
+        break;
+      case "pending":
+        const pedingTasks = taskList.filter((task) => !task.done);
+        setFilterTasks(pedingTasks);
+        break;
+      case "completed":
+        const completedTask = taskList.filter((task) => task.done);
+        setFilterTasks(completedTask);
+        break;
+    }
+  }, [currentFilter, taskList]);
 
   return (
     <main className="w-full bg-gray-100 h-screen flex justify-center items-center">
@@ -140,7 +162,10 @@ export default function Home() {
         <CardContent>
           <Separator className="mb-4" />
 
-          <Filter currentFilter={currentFilter} setCurrentFilter={setCurrentFilter} />
+          <Filter
+            currentFilter={currentFilter}
+            setCurrentFilter={setCurrentFilter}
+          />
 
           <div className="mt-4  border-b">
             {taskList.length === 0 && (
@@ -148,7 +173,7 @@ export default function Home() {
                 Você não possui atividades cadastradas!
               </p>
             )}
-            {taskList.map((task) => (
+            {filterTasks.map((task) => (
               <div
                 className="h-14 flex justify-between items-center  border-t"
                 key={task.id}
@@ -179,7 +204,11 @@ export default function Home() {
           <div className="flex justify-between mt-4">
             <div className="flex gap-2 items-center">
               <ListCheck size={18} />
-              <p className="text-xs">Tarefas Concluidas (3/3)</p>
+              <p className="text-xs">
+                Tarefas Concluidas (
+                {taskList.filter((task) => task.done).length} /{" "}
+                {taskList.length})
+              </p>
             </div>
             <AlertDialog>
               <AlertDialogTrigger>
@@ -194,12 +223,23 @@ export default function Home() {
               <AlertDialogContent>
                 <AlertDialogHeader>
                   <AlertDialogTitle>
-                    Tem Certeza que deseja exluir x items?
+                    Tem Certeza que deseja exluir{" "}
+                    {taskList.filter((task) => task.done).length} itens?
                   </AlertDialogTitle>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogAction>Sim</AlertDialogAction>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <DialogClose>
+                    <AlertDialogAction
+                      className="cursor-pointer"
+                      onClick={clearTasks}
+                    >
+                      Sim
+                    </AlertDialogAction>
+                  </DialogClose>
+
+                  <AlertDialogCancel className="cursor-pointer">
+                    Cancel
+                  </AlertDialogCancel>
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
@@ -207,14 +247,17 @@ export default function Home() {
 
           <div className="h-2 w-full bg-gray-100 mt-4 rounded-md">
             <div
-              className="h-full bg-blue-500 rounded-md"
-              style={{ width: "50%" }}
+              className="h-full bg-blue-500 rounded-md duration-300"
+              style={{
+                width: `
+              ${(taskList.filter((task) => task.done).length / taskList.length) * 100}%`,
+              }}
             ></div>
           </div>
 
           <div className="flex justify-end items-center mt-2 gap-2">
             <Sigma size={18} />
-            <p className="text-xs">3 Tarefas no total</p>
+            <p className="text-xs">{taskList.length} Tarefas no total</p>
           </div>
         </CardContent>
       </Card>

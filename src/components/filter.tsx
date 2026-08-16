@@ -1,9 +1,11 @@
 import { Badge } from "@/components/ui/badge";
 import { Blocks, Check, List } from "lucide-react";
 
+export type FilterType ="all" | "pending" | "completed";
+
 type FilterProps = {
   currentFilter: "all" | "pending" | "completed";
-  setCurrentFilter: React.Dispatch<React.SetStateAction<string>>;
+  setCurrentFilter: React.Dispatch<React.SetStateAction<FilterType>>;
 };
 
 export default function Filter({ currentFilter, setCurrentFilter }: FilterProps) {
